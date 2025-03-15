@@ -11,7 +11,7 @@ ASSISTANT_ID = "asst_HbGXnIsTBiRDtq8YGobiiKUz"  # Nahraď správným ID asistent
 client = openai.OpenAI()
 
 # Titulek aplikace
-st.title("Historický asistent – Alternativní dějiny")
+st.title("Porovnání významu pojmů")
 
 # Vysvětlení aplikace
 st.write("Zadejte otázku a zjistěte, jak by mohla vypadat historie jinak!")
