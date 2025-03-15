@@ -58,4 +58,4 @@ if messages.data:
             last_message = messages.data[0].content[0].text.value
             st.write("**Asistent:**", last_message)
 else:
-st.write("❌ Chyba: Asistent neposlal žádnou odpověď.")
+    st.write("❌ Chyba: Asistent neposlal žádnou odpověď.")
