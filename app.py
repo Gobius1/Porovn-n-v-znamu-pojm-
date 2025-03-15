@@ -25,8 +25,8 @@ if user_input:
     with st.spinner("Asistent přemýšlí..."):
         # Vytvoření nového vlákna pro konverzaci
         thread = client.beta.threads.create()
-
-        # Odeslání zprávy uživatele do konverzace
+        st.write(f"Vytvořené vlákno: {thread}")
+    # Odeslání zprávy uživatele do konverzace
         client.beta.threads.messages.create(
             thread_id=thread.id,
             role="user",
