@@ -7,7 +7,6 @@ ASSISTANT_ID = st.secrets["ASSISTANT_ID"]
 openai.api_key = st.secrets["OPENAI_API_KEY"]
 
 # ID asistenta (nahraď správným ID tvého asistenta!)
-ASSISTANT_ID = "asst_HbGXnIsTBiRDtq8YGobiiKUz"  # Nahraď správným ID asistenta
 
 # Inicializace OpenAI klienta
 client = openai.OpenAI()
