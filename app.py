@@ -43,8 +43,8 @@ ulice.napsat(f"Použitý ID asistenta: {ASSISTANT_ID}")
 
 
                 # Získání odpovědi asistenta
-        messages = client.beta.threads.messages.list(thread_id=thread.id)
-        assistant_response = messages.data[-1].content  # Poslední zpráva
+    messages = client.beta.threads.messages.list(thread_id=thread.id)
+    assistant_response = messages.data[-1].content  # Poslední zpráva
 
         # Zobrazení odpovědi
         st.write(assistant_response)
