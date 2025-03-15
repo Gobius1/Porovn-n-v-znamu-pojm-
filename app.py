@@ -40,9 +40,9 @@ if user_input:
 )
 
 ulice.napsat(f"Použitý ID asistenta: {ASSISTANT_ID}")
-)
 
-        )        # Získání odpovědi asistenta
+
+                # Získání odpovědi asistenta
         messages = client.beta.threads.messages.list(thread_id=thread.id)
         assistant_response = messages.data[-1].content  # Poslední zpráva
 
