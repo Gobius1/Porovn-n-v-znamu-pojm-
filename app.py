@@ -24,17 +24,17 @@ user_input = st.text_input("Zadejte svou otázku:")
 if user_input:
     with st.spinner("Asistent přemýšlí..."):
         # Vytvoření nového vlákna pro konverzaci
-        thread = client.beta.threads.create()
-        st.write(f"Vytvořené vlákno: {thread}")
+thread = client.beta.threads.create()
+st.write(f"Vytvořené vlákno: {thread}")
     # Odeslání zprávy uživatele do konverzace
-        client.beta.threads.messages.create(
-            thread_id=thread.id,
+client.beta.threads.messages.create(
+    thread_id=thread.id,
             role="user",
             content=user_input
         )
 
         # Spuštění asistenta
-        run = client.beta.threads.runs.create_and_poll(
+run = client.beta.threads.runs.create_and_poll(
     thread_id=thread.id,
     assistant_id=ASSISTANT_ID,  # TADY PŘIDEJ ČÁRKU!
 )
