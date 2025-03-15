@@ -1,4 +1,8 @@
 import streamlit as st
+
+st.write("✅ Načítám API klíč:", st.secrets["OPENAI_API_KEY"])
+st.write("✅ Načítám ID asistenta:", st.secrets["ASSISTANT_ID"])
+import streamlit as st
 import openai
 
 # Nastavení API klíče (musíš mít v Streamlit secrets)
