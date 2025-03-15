@@ -36,7 +36,13 @@ if user_input:
         run = client.beta.threads.runs.create_and_poll(
             thread_id=thread.id,
             assistant_id=ASSISTANT_ID
-        )
+        )        # Získání odpovědi asistenta
+        messages = client.beta.threads.messages.list(thread_id=thread.id)
+        assistant_response = messages.data[-1].content  # Poslední zpráva
+
+        # Zobrazení odpovědi
+        st.write(assistant_response)
+
 
         # Získání všech zpráv z tohoto vlákna
         messages = client.beta.threads.messages.list(thread_id=thread.id)
