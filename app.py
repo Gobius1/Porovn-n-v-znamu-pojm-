@@ -39,7 +39,8 @@ if user_input:
     assistant_id=ASSISTANT_ID,  # TADY PŘIDEJ ČÁRKU!
 )
 
-ulice.napsat(f"Použitý ID asistenta: {ASSISTANT_ID}")
+st.write(f"Použitý ID asistenta: {ASSISTANT_ID}")
+
 
 
                 # Získání odpovědi asistenta
