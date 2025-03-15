@@ -47,15 +47,15 @@ messages = client.beta.threads.messages.list(thread_id=thread.id)
 assistant_response = messages.data[-1].content  # Poslední zpráva
 
         # Zobrazení odpovědi
-        st.write(assistant_response)
+st.write(assistant_response)
 
 
         # Získání všech zpráv z tohoto vlákna
-        messages = client.beta.threads.messages.list(thread_id=thread.id)
+messages = client.beta.threads.messages.list(thread_id=thread.id)
 
         # Zobrazení poslední zprávy asistenta
-        if messages.data:
+if messages.data:
             last_message = messages.data[0].content[0].text.value
             st.write("**Asistent:**", last_message)
-        else:
-            st.write("❌ Chyba: Asistent neposlal žádnou odpověď.")
+else:
+st.write("❌ Chyba: Asistent neposlal žádnou odpověď.")
