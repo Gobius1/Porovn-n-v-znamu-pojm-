@@ -3,7 +3,7 @@ import streamlit as st
 import openai
 
 ASSISTANT_ID = st.secrets["ASSISTANT_ID"]
-# Nastavení API klíče (musíš mít v Streamlit secrets)
+
 openai.api_key = st.secrets["OPENAI_API_KEY"]
 
 # ID asistenta (nahraď správným ID tvého asistenta!)
