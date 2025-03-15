@@ -14,7 +14,7 @@ client = openai.OpenAI()
 st.title("Porovnání významu pojmů")
 
 # Vysvětlení aplikace
-st.write("Zadejte otázku a zjistěte, jak by mohla vypadat historie jinak!")
+st.write("Ahoj! Dnes budeme pracovat na porovnávání významů pojmů. Předložím ti krátké texty a otázky, na které budeš odpovídat. Začneme s prvním textem a otázkou.")
 
 # Textové pole pro vstup uživatele
 user_input = st.text_input("Zadejte svou otázku:")
