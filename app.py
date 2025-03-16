@@ -18,7 +18,7 @@ if "conversation" not in st.session_state:
 st.title("Porovnání významu pojmů")
 
 # Zobrazení úvodní věty pouze při prvním spuštění
-if st.session_state.first_response:
+if st.session_state.first_response and not st.session_state.conversation:
     st.write("Ahoj! Dnes budeme pracovat na porovnávání významů pojmů. Předložím ti krátké texty a otázky, na které budeš odpovídat. Začneme s prvním textem a otázkou.")
     st.session_state.first_response = False
 
@@ -29,12 +29,12 @@ response_container = st.container()
 with response_container:
     for role, text in st.session_state.conversation:
         if role == "assistant":
-            st.markdown(f"> **Asistent:** {text}")
+            st.write(f'**Asistent:** {text}')
         else:
             st.markdown(f"**Vy:** {text}")
 
 # Textové pole pro vstup uživatele - nyní vždy dole a po odeslání se vymaže
-user_input = st.text_input("Zadejte svou otázku:", key="user_input")
+user_input = st.text_input("Zadejte svou otázku:", key="user_input", value="")
 
 # Odeslání dotazu po zadání vstupu
 if user_input.strip():
