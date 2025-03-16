@@ -18,7 +18,7 @@ if "conversation" not in st.session_state:
 st.title("Porovnání významu pojmů")
 
 # Zobrazení úvodní věty pouze při prvním spuštění
-if st.session_state.first_response and not st.session_state.conversation:
+if st.session_state.first_response and len(st.session_state.conversation) == 0:
     st.write("Ahoj! Dnes budeme pracovat na porovnávání významů pojmů. Předložím ti krátké texty a otázky, na které budeš odpovídat. Začneme s prvním textem a otázkou.")
     st.session_state.first_response = False
 
@@ -34,7 +34,7 @@ with response_container:
             st.markdown(f"**Vy:** {text}")
 
 # Textové pole pro vstup uživatele - nyní vždy dole a po odeslání se vymaže
-user_input = st.text_input("Zadejte svou otázku:", key="user_input", value="")
+user_input = st.text_input("Zadejte svou otázku:", key="user_input", value="", on_change=lambda: st.session_state.update({"user_input": ""}))
 
 # Odeslání dotazu po zadání vstupu
 if user_input.strip():
