@@ -34,7 +34,7 @@ with response_container:
             st.markdown(f"**Vy:** {text}")
 
 # Textové pole pro vstup uživatele - nyní vždy dole
-user_input = st.text_input("Zadejte svou otázku:", key="user_input", value="")
+user_input = st.text_input("Zadejte svou otázku:", key="user_input")
 
 # Odeslání dotazu po zadání vstupu
 if user_input.strip():
