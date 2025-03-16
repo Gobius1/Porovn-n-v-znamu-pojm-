@@ -8,25 +8,42 @@ openai.api_key = st.secrets["OPENAI_API_KEY"]
 # Inicializace OpenAI klienta
 client = openai.OpenAI()
 
-# Stav pro sledování první odpovědi
+# Stav pro sledování první odpovědi a konverzace
 if "first_response" not in st.session_state:
     st.session_state.first_response = True
+if "conversation" not in st.session_state:
+    st.session_state.conversation = []
 
 # Titulek aplikace
 st.title("Porovnání významu pojmů")
 
-# Vysvětlení aplikace (zobrazí se pouze jednou)
+# Zobrazení úvodní věty pouze při prvním spuštění
 if st.session_state.first_response:
     st.write("Ahoj! Dnes budeme pracovat na porovnávání významů pojmů. Předložím ti krátké texty a otázky, na které budeš odpovídat. Začneme s prvním textem a otázkou.")
+    st.session_state.first_response = False
 
 # Kontejner pro výstup asistenta
 response_container = st.container()
 
+# Zobrazení celé konverzace
+with response_container:
+    for message in st.session_state.conversation:
+        role, text = message
+        if role == "assistant":
+            st.markdown(f"> **Asistent:** {text}")
+        else:
+            st.markdown(f"**Vy:** {text}")
+
+# Textové pole pro vstup uživatele - nyní vždy dole
+user_input = st.text_input("Zadejte svou otázku:", key="user_input")
+
 # Odeslání dotazu po zadání vstupu
-user_input = st.text_input("Zadejte svou otázku:")
 if user_input:
     with st.spinner("Asistent přemýšlí..."):
         try:
+            # Uložení uživatelského vstupu do konverzace
+            st.session_state.conversation.append(("user", user_input))
+            
             # Vytvoření nového vlákna pro konverzaci
             thread = client.beta.threads.create()
             
@@ -56,14 +73,12 @@ if user_input:
                     ])
                     break
             
-            # Zobrazení odpovědi asistenta nad vstupním polem
-            with response_container:
-                if assistant_response:
-                    st.write("**Asistent:**")
-                    st.markdown(f"> {assistant_response}")  # Formátování odpovědi
-                    st.session_state.first_response = False  # Po první odpovědi už nezobrazovat úvod
-                else:
-                    st.error("❌ Chyba: Nepodařilo se najít odpověď asistenta.")
+            # Uložení odpovědi asistenta do konverzace a zobrazení
+            if assistant_response:
+                st.session_state.conversation.append(("assistant", assistant_response))
+                st.experimental_rerun()
+            else:
+                st.error("❌ Chyba: Nepodařilo se najít odpověď asistenta.")
         except openai.OpenAIError as e:
             st.error(f"❌ Chyba při komunikaci s OpenAI API: {e}")
         except Exception as e:
