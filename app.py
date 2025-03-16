@@ -40,18 +40,27 @@ if user_input:
             # Získání odpovědi asistenta
             messages = client.beta.threads.messages.list(thread_id=thread.id)
             
-            if messages.data:
+            # Debugovací výpis všech zpráv
+            st.write("📜 Debug: Všechny zprávy od API:")
+            for msg in messages.data:
+                st.write(msg)
+                
+            # Ověření, že odpověď není prázdná
+            if messages.data and messages.data[-1].content:
                 assistant_response = messages.data[-1].content[0].text.value  # Poslední zpráva asistenta
                 st.write("**Asistent:**", assistant_response)
             else:
-                st.write("❌ Chyba: Asistent neposlal žádnou odpověď.")
+                st.error("❌ Chyba: Asistent neposlal žádnou odpověď nebo odpověď je prázdná.")
         except openai.OpenAIError as e:
             st.error(f"❌ Chyba při komunikaci s OpenAI API: {e}")
         except Exception as e:
             st.error(f"❌ Neočekávaná chyba: {e}")
 
         # Výpis podrobností o běhu asistenta
-        if run.status == "completed":
-            st.success("✅ Asistent úspěšně odpověděl.")
+        if run and hasattr(run, "status"):
+            if run.status == "completed":
+                st.success("✅ Asistent úspěšně odpověděl.")
+            else:
+                st.error(f"❌ Asistent neodpověděl správně, status: {run.status}")
         else:
-            st.error(f"❌ Asistent neodpověděl správně, status: {run.status}")
+            st.error("❌ Nebylo možné získat stav běhu asistenta.")
