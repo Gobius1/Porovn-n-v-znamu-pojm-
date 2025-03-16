@@ -47,7 +47,12 @@ if user_input:
                 
             # Ověření, že odpověď není prázdná
             if messages.data and messages.data[-1].content:
-                assistant_response = "\n".join([block.text.value for block in messages.data[-1].content if block.type == "text"])
+                assistant_response = "\n".join([
+                    block.text.value for block in messages.data[-1].content 
+                    if hasattr(block, 'text') and hasattr(block.text, 'value')
+                ])
+                
+                st.write("📌 Debug: Extrahovaná odpověď:", assistant_response)  # Debug
                 st.write("**Asistent:**", assistant_response)
             else:
                 st.error("❌ Chyba: Asistent neposlal žádnou odpověď nebo odpověď je prázdná.")
