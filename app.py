@@ -40,24 +40,22 @@ if user_input:
             # Získání odpovědi asistenta
             messages = client.beta.threads.messages.list(thread_id=thread.id)
             
-            # Debugovací výpis všech zpráv
-            st.write("📜 Debug: Všechny zprávy od API:")
-            for msg in messages.data:
-                st.write(msg)
-                
             # Vyhledání poslední odpovědi asistenta
             assistant_response = None
             for msg in reversed(messages.data):  # Projdeme zprávy od nejnovější
                 if msg.role == "assistant" and msg.content:
                     assistant_response = "\n".join([
-                        block.text.value for block in msg.content 
+                        block.text.value.strip() for block in msg.content 
                         if hasattr(block, 'text') and hasattr(block.text, 'value')
                     ])
                     break
             
+            # Skrytí debugovacích výpisů a zobrazení pouze odpovědi
+            st.empty()  # Vymaže předchozí obsah výstupu
+            
             if assistant_response:
-                st.write("📌 Debug: Extrahovaná odpověď:", assistant_response)  # Debug
-                st.write("**Asistent:**", assistant_response)
+                st.write("**Asistent:**")
+                st.markdown(f"> {assistant_response}")  # Formátování odpovědi
             else:
                 st.error("❌ Chyba: Nepodařilo se najít odpověď asistenta.")
         except openai.OpenAIError as e:
