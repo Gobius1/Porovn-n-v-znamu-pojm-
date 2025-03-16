@@ -76,7 +76,7 @@ if user_input:
             # Uložení odpovědi asistenta do konverzace a zobrazení
             if assistant_response:
                 st.session_state.conversation.append(("assistant", assistant_response))
-                st.rerun()
+                
             else:
                 st.error("❌ Chyba: Nepodařilo se najít odpověď asistenta.")
         except openai.OpenAIError as e:
