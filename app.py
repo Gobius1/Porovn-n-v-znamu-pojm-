@@ -19,10 +19,11 @@ st.title("Porovnání významu pojmů")
 if st.session_state.first_response:
     st.write("Ahoj! Dnes budeme pracovat na porovnávání významů pojmů. Předložím ti krátké texty a otázky, na které budeš odpovídat. Začneme s prvním textem a otázkou.")
 
-# Textové pole pro vstup uživatele - přesunuto dolů
-user_input = st.text_input("Zadejte svou otázku:")
+# Kontejner pro výstup asistenta
+response_container = st.container()
 
 # Odeslání dotazu po zadání vstupu
+user_input = st.text_input("Zadejte svou otázku:")
 if user_input:
     with st.spinner("Asistent přemýšlí..."):
         try:
@@ -55,15 +56,14 @@ if user_input:
                     ])
                     break
             
-            # Skrytí debugovacích výpisů a zobrazení pouze odpovědi
-            st.empty()  # Vymaže předchozí obsah výstupu
-            
-            if assistant_response:
-                st.write("**Asistent:**")
-                st.markdown(f"> {assistant_response}")  # Formátování odpovědi
-                st.session_state.first_response = False  # Po první odpovědi už nezobrazovat úvod
-            else:
-                st.error("❌ Chyba: Nepodařilo se najít odpověď asistenta.")
+            # Zobrazení odpovědi asistenta nad vstupním polem
+            with response_container:
+                if assistant_response:
+                    st.write("**Asistent:**")
+                    st.markdown(f"> {assistant_response}")  # Formátování odpovědi
+                    st.session_state.first_response = False  # Po první odpovědi už nezobrazovat úvod
+                else:
+                    st.error("❌ Chyba: Nepodařilo se najít odpověď asistenta.")
         except openai.OpenAIError as e:
             st.error(f"❌ Chyba při komunikaci s OpenAI API: {e}")
         except Exception as e:
