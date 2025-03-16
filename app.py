@@ -27,22 +27,24 @@ response_container = st.container()
 
 # Zobrazení celé konverzace
 with response_container:
-    for message in st.session_state.conversation:
-        role, text = message
+    for role, text in st.session_state.conversation:
         if role == "assistant":
             st.markdown(f"> **Asistent:** {text}")
         else:
             st.markdown(f"**Vy:** {text}")
 
 # Textové pole pro vstup uživatele - nyní vždy dole
-user_input = st.text_input("Zadejte svou otázku:", key="user_input")
+user_input = st.text_input("Zadejte svou otázku:", key="user_input", value="")
 
 # Odeslání dotazu po zadání vstupu
-if user_input:
+if user_input.strip():
     with st.spinner("Asistent přemýšlí..."):
         try:
             # Uložení uživatelského vstupu do konverzace
             st.session_state.conversation.append(("user", user_input))
+            
+            # Vymazání vstupního pole po odeslání dotazu
+            st.session_state["user_input"] = ""
             
             # Vytvoření nového vlákna pro konverzaci
             thread = client.beta.threads.create()
@@ -76,7 +78,7 @@ if user_input:
             # Uložení odpovědi asistenta do konverzace a zobrazení
             if assistant_response:
                 st.session_state.conversation.append(("assistant", assistant_response))
-                
+                st.experimental_rerun()
             else:
                 st.error("❌ Chyba: Nepodařilo se najít odpověď asistenta.")
         except openai.OpenAIError as e:
