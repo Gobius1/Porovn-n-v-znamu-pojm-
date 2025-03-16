@@ -47,7 +47,7 @@ if user_input:
                 
             # Ověření, že odpověď není prázdná
             if messages.data and messages.data[-1].content:
-                assistant_response = messages.data[-1].content[0].text.value  # Poslední zpráva asistenta
+                assistant_response = "\n".join([block.text.value for block in messages.data[-1].content if block.type == "text"])
                 st.write("**Asistent:**", assistant_response)
             else:
                 st.error("❌ Chyba: Asistent neposlal žádnou odpověď nebo odpověď je prázdná.")
