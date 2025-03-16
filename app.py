@@ -8,13 +8,18 @@ openai.api_key = st.secrets["OPENAI_API_KEY"]
 # Inicializace OpenAI klienta
 client = openai.OpenAI()
 
+# Stav pro sledování první odpovědi
+if "first_response" not in st.session_state:
+    st.session_state.first_response = True
+
 # Titulek aplikace
 st.title("Porovnání významu pojmů")
 
-# Vysvětlení aplikace
-st.write("Ahoj! Dnes budeme pracovat na porovnávání významů pojmů. Předložím ti krátké texty a otázky, na které budeš odpovídat. Začneme s prvním textem a otázkou.")
+# Vysvětlení aplikace (zobrazí se pouze jednou)
+if st.session_state.first_response:
+    st.write("Ahoj! Dnes budeme pracovat na porovnávání významů pojmů. Předložím ti krátké texty a otázky, na které budeš odpovídat. Začneme s prvním textem a otázkou.")
 
-# Textové pole pro vstup uživatele
+# Textové pole pro vstup uživatele - přesunuto dolů
 user_input = st.text_input("Zadejte svou otázku:")
 
 # Odeslání dotazu po zadání vstupu
@@ -56,18 +61,10 @@ if user_input:
             if assistant_response:
                 st.write("**Asistent:**")
                 st.markdown(f"> {assistant_response}")  # Formátování odpovědi
+                st.session_state.first_response = False  # Po první odpovědi už nezobrazovat úvod
             else:
                 st.error("❌ Chyba: Nepodařilo se najít odpověď asistenta.")
         except openai.OpenAIError as e:
             st.error(f"❌ Chyba při komunikaci s OpenAI API: {e}")
         except Exception as e:
             st.error(f"❌ Neočekávaná chyba: {e}")
-
-        # Výpis podrobností o běhu asistenta
-        if run and hasattr(run, "status"):
-            if run.status == "completed":
-                st.success("✅ Asistent úspěšně odpověděl.")
-            else:
-                st.error(f"❌ Asistent neodpověděl správně, status: {run.status}")
-        else:
-            st.error("❌ Nebylo možné získat stav běhu asistenta.")
