@@ -34,7 +34,7 @@ with response_container:
             st.markdown(f"**Vy:** {text}")
 
 # Textové pole pro vstup uživatele - nyní vždy dole a po odeslání se vymaže
-user_input = st.text_input("Zadejte svou otázku:", key="user_input", value="", on_change=lambda: st.session_state.update({"user_input": ""}))
+user_input = st.text_input("Zadejte svou otázku:", key="user_input")
 
 # Odeslání dotazu po zadání vstupu
 if user_input.strip():
@@ -44,7 +44,7 @@ if user_input.strip():
             st.session_state.conversation.append(("user", user_input))
             
             # Vymazání vstupního pole po odeslání dotazu
-            del st.session_state["user_input"]
+            st.session_state["user_input"] = ""
             
             # Vytvoření nového vlákna pro konverzaci
             thread = client.beta.threads.create()
@@ -78,6 +78,7 @@ if user_input.strip():
             # Uložení odpovědi asistenta do konverzace a zobrazení
             if assistant_response:
                 st.session_state.conversation.append(("assistant", assistant_response))
+                st.session_state["user_input"] = ""  # Vymazání vstupu po zpracování
                 st.rerun()
             else:
                 st.error("❌ Chyba: Nepodařilo se najít odpověď asistenta.")
