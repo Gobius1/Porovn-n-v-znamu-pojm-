@@ -25,7 +25,7 @@ if st.session_state.first_response:
 # Kontejner pro výstup asistenta
 response_container = st.container()
 
-# Zobrazení celé konverzace
+# Zobrazení celé konverzace nad vstupním polem
 with response_container:
     for role, text in st.session_state.conversation:
         if role == "assistant":
@@ -33,7 +33,7 @@ with response_container:
         else:
             st.markdown(f"**Vy:** {text}")
 
-# Textové pole pro vstup uživatele - nyní vždy dole
+# Textové pole pro vstup uživatele - nyní vždy dole a po odeslání se vymaže
 user_input = st.text_input("Zadejte svou otázku:", key="user_input")
 
 # Odeslání dotazu po zadání vstupu
@@ -44,7 +44,7 @@ if user_input.strip():
             st.session_state.conversation.append(("user", user_input))
             
             # Vymazání vstupního pole po odeslání dotazu
-            del st.session_state["user_input"]
+            st.session_state["user_input"] = ""
             
             # Vytvoření nového vlákna pro konverzaci
             thread = client.beta.threads.create()
