@@ -45,17 +45,21 @@ if user_input:
             for msg in messages.data:
                 st.write(msg)
                 
-            # Ověření, že odpověď není prázdná
-            if messages.data and messages.data[-1].content:
-                assistant_response = "\n".join([
-                    block.text.value for block in messages.data[-1].content 
-                    if hasattr(block, 'text') and hasattr(block.text, 'value')
-                ])
-                
+            # Vyhledání poslední odpovědi asistenta
+            assistant_response = None
+            for msg in reversed(messages.data):  # Projdeme zprávy od nejnovější
+                if msg.role == "assistant" and msg.content:
+                    assistant_response = "\n".join([
+                        block.text.value for block in msg.content 
+                        if hasattr(block, 'text') and hasattr(block.text, 'value')
+                    ])
+                    break
+            
+            if assistant_response:
                 st.write("📌 Debug: Extrahovaná odpověď:", assistant_response)  # Debug
                 st.write("**Asistent:**", assistant_response)
             else:
-                st.error("❌ Chyba: Asistent neposlal žádnou odpověď nebo odpověď je prázdná.")
+                st.error("❌ Chyba: Nepodařilo se najít odpověď asistenta.")
         except openai.OpenAIError as e:
             st.error(f"❌ Chyba při komunikaci s OpenAI API: {e}")
         except Exception as e:
