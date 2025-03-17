@@ -78,7 +78,7 @@ if user_input.strip():
             # Uložení odpovědi asistenta do konverzace a zobrazení
             if assistant_response:
                 st.session_state.conversation.append(("assistant", assistant_response))
-                st.session_state["user_input"] = ""  # Vymazání vstupu po zpracování
+                st.session_state["user_input"] = None  # Vymazání vstupu po zpracování
                 st.rerun()
             else:
                 st.error("❌ Chyba: Nepodařilo se najít odpověď asistenta.")
