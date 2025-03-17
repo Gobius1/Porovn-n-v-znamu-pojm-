@@ -8,43 +8,40 @@ openai.api_key = st.secrets["OPENAI_API_KEY"]
 # Inicializace OpenAI klienta
 client = openai.OpenAI()
 
-# Stav pro sledování první odpovědi a konverzace
-if "first_response" not in st.session_state:
-    st.session_state.first_response = True
+# Inicializace stavu aplikace
 if "conversation" not in st.session_state:
     st.session_state.conversation = []
+if "first_message" not in st.session_state:
+    st.session_state.first_message = True
 
 # Titulek aplikace
 st.title("Porovnání významu pojmů")
 
-# Zobrazení úvodní věty pouze při prvním spuštění
-if st.session_state.first_response and len(st.session_state.conversation) == 0:
-    st.write("Ahoj! Dnes budeme pracovat na porovnávání významů pojmů. Předložím ti krátké texty a otázky, na které budeš odpovídat. Začneme s prvním textem a otázkou.")
-    st.session_state.first_response = False
+# Zobrazení úvodní zprávy pouze při prvním spuštění
+if st.session_state.first_message:
+    st.write("Pro spuštění konverzace napište jakoukoli zprávu nebo pozdrav.")
 
 # Kontejner pro výstup asistenta
 response_container = st.container()
 
-# Zobrazení celé konverzace nad vstupním polem
+# Zobrazení celé konverzace
 with response_container:
     for role, text in st.session_state.conversation:
         if role == "assistant":
-            st.markdown(f'**Asistent:** {text}')
+            st.markdown(f'🟡 **Asistent:** {text}')
         else:
-            st.markdown(f"**Vy:** {text}")
+            st.markdown(f'🔴 **Vy:** {text}')
 
-# Textové pole pro vstup uživatele - nyní vždy dole a po odeslání se vymaže
-user_input = st.text_input("Zadejte svou otázku:", key="user_input")
+# Vstupní pole pro uživatele, vždy umístěné dole
+user_input = st.text_input("Napište svoji zprávu:", key="user_input")
 
-# Odeslání dotazu po zadání vstupu
+# Odeslání zprávy uživatele
 if user_input.strip():
     with st.spinner("Asistent přemýšlí..."):
         try:
             # Uložení uživatelského vstupu do konverzace
             st.session_state.conversation.append(("user", user_input))
-            
-            # Vymazání vstupního pole po odeslání dotazu
-            st.session_state.pop("user_input", None)
+            st.session_state.first_message = False  # Úvodní zpráva už zmizí
             
             # Vytvoření nového vlákna pro konverzaci
             thread = client.beta.threads.create()
@@ -67,18 +64,25 @@ if user_input.strip():
             
             # Vyhledání poslední odpovědi asistenta
             assistant_response = None
-            for msg in reversed(messages.data):  # Projdeme zprávy od nejnovější
+            for msg in reversed(messages.data):
                 if msg.role == "assistant" and msg.content:
                     assistant_response = "\n".join([
-                        block.text.value.strip() for block in msg.content 
+                        block.text.value.strip() for block in msg.content
                         if hasattr(block, 'text') and hasattr(block.text, 'value')
                     ])
                     break
             
-            # Uložení odpovědi asistenta do konverzace a zobrazení
+            # Hodnocení odpovědi
+            if "správně" in assistant_response.lower():
+                feedback = "🟢 Správná odpověď!"
+            else:
+                feedback = "🔵 Můžeš to ještě upřesnit?"
+            
+            # Uložení odpovědi asistenta do konverzace
             if assistant_response:
                 st.session_state.conversation.append(("assistant", assistant_response))
-                st.session_state.pop("user_input", None)  # Vymazání vstupu po zpracování
+                st.session_state.conversation.append(("assistant", feedback))
+                st.session_state["user_input"] = ""  # Vymazání vstupu po zpracování
                 st.rerun()
             else:
                 st.error("❌ Chyba: Nepodařilo se najít odpověď asistenta.")
