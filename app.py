@@ -44,7 +44,7 @@ if user_input.strip():
             st.session_state.conversation.append(("user", user_input))
             
             # Vymazání vstupního pole po odeslání dotazu
-            st.session_state["user_input"] = None
+            st.session_state.pop("user_input", None)
             
             # Vytvoření nového vlákna pro konverzaci
             thread = client.beta.threads.create()
@@ -78,6 +78,7 @@ if user_input.strip():
             # Uložení odpovědi asistenta do konverzace a zobrazení
             if assistant_response:
                 st.session_state.conversation.append(("assistant", assistant_response))
+                st.session_state.pop("user_input", None)  # Vymazání vstupu po zpracování
                 st.rerun()
             else:
                 st.error("❌ Chyba: Nepodařilo se najít odpověď asistenta.")
