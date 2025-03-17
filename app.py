@@ -44,7 +44,7 @@ if user_input.strip():
             st.session_state.conversation.append(("user", user_input))
             
             # Vymazání vstupního pole po odeslání dotazu
-            st.session_state["user_input"] = ""
+            st.session_state.pop("user_input", None)
             
             # Vytvoření nového vlákna pro konverzaci
             thread = client.beta.threads.create()
