@@ -33,7 +33,7 @@ with response_container:
             st.markdown(f'🔴 **Vy:** {text}')
 
 # Vstupní pole pro uživatele, vždy umístěné dole
-user_input = st.text_input("Napište svoji zprávu:", key="user_input")
+user_input = st.text_input("Napište svoji zprávu:", key="user_input", value="")
 
 # Odeslání zprávy uživatele
 if user_input.strip():
@@ -82,7 +82,7 @@ if user_input.strip():
             if assistant_response:
                 st.session_state.conversation.append(("assistant", assistant_response))
                 st.session_state.conversation.append(("assistant", feedback))
-                if "user_input" in st.session_state: del st.session_state["user_input"]  # Vymazání vstupu po zpracování
+                st.session_state["user_input"] = ""  # Vymazání vstupu po zpracování
                 st.rerun()
             else:
                 st.error("❌ Chyba: Nepodařilo se najít odpověď asistenta.")
